@@ -1,0 +1,5 @@
+flask
+yfinance
+launchdarkly-server-sdk
+python-dotenv
+pandas

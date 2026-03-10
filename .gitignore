@@ -1,0 +1,18 @@
+.claude
+prd.md
+readme.md
+setup_tasks.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Environment
+.env
+
+# macOS
+.DS_Store
