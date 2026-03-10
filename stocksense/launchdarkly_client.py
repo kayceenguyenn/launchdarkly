@@ -1,6 +1,9 @@
 import ldclient
 from ldclient.config import Config
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 
 def init_ld_client():

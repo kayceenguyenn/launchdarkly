@@ -1,4 +1,5 @@
 import uuid
+import ldclient
 from flask import Blueprint, request, jsonify
 from services.yfinance_service import get_quote_data, get_history_data
 from services.scoring import compute_simple_score, compute_advanced_score
@@ -10,7 +11,8 @@ quote_bp = Blueprint("quote", __name__)
 @quote_bp.route("/quote/<ticker>")
 def get_quote(ticker):
     user_key = request.args.get("user_key", str(uuid.uuid4()))
-    context = {"kind": "user", "key": user_key}
+    user_type = request.args.get("user_type", "free")
+    context = ldclient.Context.builder(user_key).kind("user").set("user_type", user_type).build()
 
     quote = get_quote_data(ticker)
     if not quote:
@@ -18,6 +20,7 @@ def get_quote(ticker):
 
     try:
         algorithm = ld_client.variation("price-scoring-algorithm", context, "simple")
+        print(f"[LD] flag=price-scoring-algorithm context={context} result={algorithm}")
     except Exception:
         algorithm = "simple"
 
@@ -33,6 +36,7 @@ def get_quote(ticker):
 
     return jsonify({
         **quote,
+        "user_type": user_type,
         "score": score,
         "score_method": algorithm,
     })

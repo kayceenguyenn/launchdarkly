@@ -1,5 +1,6 @@
 import uuid
 import time
+import ldclient
 import pandas as pd
 from flask import Blueprint, request, jsonify
 from services.yfinance_service import get_history_data
@@ -36,7 +37,8 @@ def compute_macd(closes: pd.Series) -> dict:
 @indicators_bp.route("/indicators/<ticker>")
 def get_indicators(ticker):
     user_key = request.args.get("user_key", str(uuid.uuid4()))
-    context = {"kind": "user", "key": user_key}
+    user_type = request.args.get("user_type", "free")
+    context = ldclient.Context.builder(user_key).kind("user").set("user_type", user_type).build()
 
     try:
         variation = ld_client.variation("technical-indicator-algorithm", context, "fast")
